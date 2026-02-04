@@ -1,0 +1,9 @@
+﻿namespace = diploplus_error_suppression
+
+diploplus_error_suppression.0001 = {
+  hidden = yes
+  orphan = yes
+  trigger = {
+    exists = global_var:diploplus_is_loaded
+  }
+}
