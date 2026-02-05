@@ -1,0 +1,62 @@
+subject_type_market_union = {
+	# Esta es una unión económica voluntaria, no una relación de dominación política
+	# Solo comparten mercado, manteniendo total independencia en todo lo demás
+	# Usado tanto por join_market como invite_to_market
+	
+	allow_change_country_flag = no
+	use_overlord_map_color = no
+	use_overlord_ruler = no
+	annex_on_country_formation = no
+	can_start_own_diplomatic_plays = yes
+	breaks_if_subject_not_protected = no  # No se rompe automáticamente
+	join_overlord_wars = no
+	can_have_subjects = yes
+	overlord_must_be_higher_rank = no  # No requiere mayor rango
+	overlord_must_be_same_country_type = no
+	use_for_release_country = no
+	gives_prestige_to_overlord = no  # No da prestigio extra
+	can_offer_to_become_in_sway_offers = no
+
+	# No especificamos diplomatic_action porque se usa en múltiples acciones
+
+	autonomy_level = 3  # Máxima autonomía
+	category = same_as_puppet  # Categoría técnica
+
+	# Cualquier país puede ser overlord o subject en esta relación
+	valid_overlord_country_types = {
+		recognized
+		colonial
+		unrecognized
+	}
+
+	valid_subject_country_types = {
+		recognized
+		colonial
+		unrecognized
+	}
+
+	valid_overlord_ranks = {
+		great_power
+		major_power
+		minor_power
+		insignificant_power
+		unrecognized_major_power
+		unrecognized_regional_power
+		unrecognized_power
+	}
+
+	valid_subject_ranks = {
+		great_power
+		major_power
+		minor_power
+		insignificant_power
+		unrecognized_major_power
+		unrecognized_regional_power
+		unrecognized_power
+	}
+
+	# Valor bajo para la IA - no es una relación de dominación deseada
+	ai_value = {
+		value = 0.1
+	}
+}

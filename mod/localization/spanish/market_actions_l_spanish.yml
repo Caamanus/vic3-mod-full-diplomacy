@@ -1,7 +1,7 @@
 ﻿l_spanish:
  # Acción Unirse al Mercado
  join_market: "Unirse al Mercado"
- join_market_desc: "Solicitar unirse al [concept_market] de otro país. Solo disponible para países no vasallos que sean miembros del mismo [concept_power_bloc]. El país con menos [concept_prestige] se unirá al mercado del país con más."
+ join_market_desc: "Solicitar unirse al [concept_market] de otro país. Solo disponible para países no vasallos con más [concept_prestige] que el objetivo. El país con más prestigio se unirá al mercado del país con menos."
  join_market_action_name: "$join_market$"
  join_market_action_propose_name: "$join_market$"
  join_market_pact_desc: "[SCOPE.GetRootScope.GetDiplomaticPact.GetFirstCountry.GetName] se ha unido al [concept_market] controlado por [SCOPE.GetRootScope.GetDiplomaticPact.GetSecondCountry.GetName]."
@@ -13,9 +13,17 @@
  join_market_success_effect: "Te has unido exitosamente al [concept_market] del país objetivo"
  
  # Condiciones para Unirse al Mercado
- JOIN_MARKET_MUST_BE_IN_SAME_POWER_BLOC: "Debe ser miembro del mismo [concept_power_bloc]"
- JOIN_MARKET_CANNOT_BE_SUBJECT: "No puede ser un [concept_subject]"
- JOIN_MARKET_LESS_PRESTIGE: "Debe tener menos [concept_prestige] que el país objetivo"
+ JOIN_MARKET_CANNOT_BE_SUBJECT: "No puede ser un [concept_subject] (excepto miembros de Unión de Mercado)"
+ JOIN_MARKET_MORE_PRESTIGE: "Debe tener más [concept_prestige] que el país objetivo"
+ 
+ # Condiciones para Invitar al Mercado
+ INVITE_MARKET_CANNOT_BE_SUBJECT: "No puede ser un [concept_subject] (excepto miembros de Unión de Mercado)"
+ INVITE_MARKET_TARGET_CANNOT_BE_SUBJECT: "El objetivo no puede ser un [concept_subject] (excepto miembros de Unión de Mercado)"
+ INVITE_MARKET_MORE_PRESTIGE: "Debe tener más [concept_prestige] que el país objetivo"
+ 
+ # Tipo de Subject: Unión de Mercado
+ subject_type_market_union: "Unión de Mercado"
+ subject_type_market_union_desc: "Una unión económica voluntaria donde los países comparten un [concept_market] común mientras mantienen completa independencia política. Cualquiera de las partes puede abandonarla en cualquier momento."
  
  # Acción Salir del Mercado
  leave_market: "Salir del Mercado"
@@ -26,6 +34,28 @@
  leave_market_action_notification_desc: "[INITIATOR_COUNTRY.GetName] ha abandonado nuestro [concept_market] y establecido su propio sistema económico separado."
  leave_market_success_effect: "Has abandonado exitosamente el [concept_market] y ahora controlas el tuyo propio"
  
+ # Acción Invitar al Mercado
+ invite_to_market: "Invitar al Mercado"
+ invite_to_market_desc: "Invitar a otro país a unirse a tu [concept_market]. Solo disponible para países no vasallos con más [concept_prestige] que el objetivo."
+ invite_to_market_action_name: "$invite_to_market$"
+ invite_to_market_action_propose_name: "$invite_to_market$"
+ invite_to_market_pact_desc: "[SCOPE.GetRootScope.GetDiplomaticPact.GetSecondCountry.GetName] se ha unido al [concept_market] controlado por [SCOPE.GetRootScope.GetDiplomaticPact.GetFirstCountry.GetName]."
+ invite_to_market_action_notification_name: "[INITIATOR_COUNTRY.GetName] nos invita a su mercado"
+ invite_to_market_action_notification_desc: "[INITIATOR_COUNTRY.GetName] nos ha invitado a unirnos a su [concept_market]."
+ invite_to_market_action_break_name: "Expulsar del Mercado"
+ invite_to_market_action_notification_break_name: "[INICIATOR_COUNTRY.GetName] nos expulsó de su mercado"
+ invite_to_market_action_notification_break_desc: "[INITIATOR_COUNTRY.GetName] nos ha expulsado de su [concept_market]."
+ invite_to_market_success_effect: "Has invitado exitosamente al país objetivo a tu [concept_market]"
+ 
  # Condiciones para Salir del Mercado
  LEAVE_MARKET_CANNOT_BE_SUBJECT: "No puede ser un [concept_subject]"
  LEAVE_MARKET_BAD_RELATIONS: "Las [concept_relations] con el dueño del mercado deben estar por debajo de [concept_relations_cordial]"
+ 
+ # Factores de Aceptación de IA
+ DIPLOMATIC_ACCEPTANCE_STRATEGIC_ADJACENT: "Adyacencia Estratégica"
+ DIPLOMATIC_ACCEPTANCE_HAS_ECONOMIC_TIES: "Tiene lazos económicos con otros países"
+ DIPLOMATIC_ACCEPTANCE_IN_SAME_POWER_BLOC: "Miembro del mismo [concept_power_bloc]"
+ 
+ # Requisitos del Pacto
+ DIPLOMATIC_PACT_REQUIREMENT_ACTOR_NOT_SUBJECT: "El país proponente no debe ser un [concept_subject]"
+ DIPLOMATIC_PACT_REQUIREMENT_TARGET_NOT_SUBJECT: "El país objetivo no debe ser un [concept_subject]"

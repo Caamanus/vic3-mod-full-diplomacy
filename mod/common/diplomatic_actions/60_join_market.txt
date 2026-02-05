@@ -4,7 +4,6 @@ join_market = {
 	uses_random_approval = yes
 	groups = {
 		general
-		power_bloc_member
 	}
 
 	texture = "gfx/interface/icons/diplomatic_action_icons/request_market_control.dds"
@@ -13,6 +12,10 @@ join_market = {
 	selectable = {
 		NOT = { is_country_type = decentralized }
 		is_revolutionary = no
+		OR = {
+			is_subject = no
+			is_subject_type = subject_type_market_union
+		}
 	}
 
 	potential = {
@@ -25,22 +28,19 @@ join_market = {
 	}
 
 	possible = {
-		# Debe estar en el mismo power bloc
-		custom_tooltip = {
-			text = "JOIN_MARKET_MUST_BE_IN_SAME_POWER_BLOC"
-			is_in_same_power_bloc = scope:target_country
-		}
-		
-		# No debe ser vasallo
+		# No debe ser vasallo de otro país (pero puede ser market_union)
 		custom_tooltip = {
 			text = "JOIN_MARKET_CANNOT_BE_SUBJECT"
-			is_subject = no
+			OR = {
+				is_subject = no
+				is_subject_type = subject_type_market_union
+			}
 		}
 		
-		# El actor (quien pide) debe tener menos prestigio que el target
+		# El actor (quien pide) debe tener MAYOR prestigio que el target
 		custom_tooltip = {
-			text = "JOIN_MARKET_LESS_PRESTIGE"
-			prestige < scope:target_country.prestige
+			text = "JOIN_MARKET_MORE_PRESTIGE"
+			prestige > scope:target_country.prestige
 		}
 
 		# El target debe controlar su mercado
@@ -74,26 +74,19 @@ join_market = {
 
 	pact = {
 		cost = 0
+		has_junior_participant = yes
+		maintenance_paid_by = first_country
 		forced_duration = 12
 
-		# El target (second_country) será el dueño del mercado
-		market_owner = second_country
+		# El actor se convierte en "junior" del target's market
+		subject_type = subject_type_market_union
 
-		requirement_to_maintain = {
-			trigger = {
-				# Debe seguir en el mismo power bloc
-				is_in_same_power_bloc = scope:target_country
-			}
-		}
-
-		requirement_to_maintain = {
-			trigger = {
-				# No debe convertirse en vasallo
-				is_subject = no
-			}
-		}
-
+		# Ambos pueden romper libremente
 		actor_can_break = {
+			always = yes
+		}
+
+		target_can_break = {
 			always = yes
 		}
 
@@ -108,7 +101,7 @@ join_market = {
 
 	ai = {
 		evaluation_chance = {
-			value = 0.15
+			value = 0.25
 		}
 
 		accept_score = {
@@ -116,7 +109,7 @@ join_market = {
 
 			add = {
 				desc = "DIPLOMATIC_ACCEPTANCE_BASE"
-				value = -50
+				value = -100
 			}
 
 			# Opinión ideológica
@@ -128,7 +121,7 @@ join_market = {
 					desc = "DIPLOMATIC_ACCEPTANCE_IDEOLOGICAL_OPINION"
 					value = "scope:actor.ai_ideological_opinion(root)"
 					multiply = 0.5
-					max = 30
+					max = 25
 				}
 			}
 			else_if = {
@@ -139,16 +132,16 @@ join_market = {
 					desc = "DIPLOMATIC_ACCEPTANCE_IDEOLOGICAL_OPINION_NEGATIVE"
 					value = "scope:actor.ai_ideological_opinion(root)"
 					multiply = 0.5
-					min = -30
+					min = -25
 				}
 			}
 
-			# Beneficio económico para el actor
+			# Tamaño económico del que solicita - países más grandes mejoran más tu mercado
 			add = {
-				desc = "DIPLOMATIC_ACCEPTANCE_ACTOR_CAPITAL_MARKET_ACCESS"
-				value = 1
-				subtract = scope:actor.capital.market_access
-				multiply = 80
+				desc = "DIPLOMATIC_ACCEPTANCE_ACTOR_GDP"
+				value = "scope:actor.gdp"
+				divide = 5000000
+				max = 50
 			}
 
 			# Relaciones entre países
@@ -190,28 +183,51 @@ join_market = {
 					limit = {
 						has_attitude = {
 							who = scope:actor
-							attitude = protective
+							attitude = genial
 						}
 					}
-					value = 40
+					value = 50
 				}
 				else_if = {
 					limit = {
-						has_attitude = {
-							who = scope:actor
-							attitude = cooperative
+						OR = {
+							has_attitude = {
+								who = scope:actor
+								attitude = protective
+							}
+							has_attitude = {
+								who = scope:actor
+								attitude = cooperative
+							}
+							has_attitude = {
+								who = scope:actor
+								attitude = conciliatory
+							}
 						}
 					}
-					value = 20
+					value = 25
 				}
 				else_if = {
 					limit = {
-						has_attitude = {
-							who = scope:actor
-							attitude = domineering
+						OR = {
+							has_attitude = {
+								who = scope:actor
+								attitude = antagonistic
+							}
+							has_attitude = {
+								who = scope:actor
+								attitude = domineering
+							}
+							has_attitude = {
+								who = scope:actor
+								attitude = belligerent
+							}
 						}
 					}
-					value = -30
+					value = -100
+				}
+				else = {
+					value = -50
 				}
 			}
 
@@ -239,10 +255,70 @@ join_market = {
 					value = -50
 				}
 			}
+
+			# Diferencia de rango - preferimos países de rango similar o menor
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_RANK"
+				value = country_rank
+				subtract = scope:actor.country_rank
+				multiply = 10
+				max = 30
+				min = -30
+			}
+
+			# Dependencia económica del actor hacia nosotros
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_ACTOR_ECONOMIC_DEPENDENCE"
+				value = "scope:actor.economic_dependence(root)"
+				multiply = 100
+				max = 50
+			}
+
+			# Bonificación si somos países adyacentes
+			if = {
+				limit = {
+					is_strategic_adjacent_to = scope:actor
+				}
+				add = {
+					desc = "DIPLOMATIC_ACCEPTANCE_STRATEGIC_ADJACENT"
+					value = 20
+				}
+			}
+
+			# Oportunidades de lobby
+			if = {
+				limit = {
+					scope:actor = {
+						has_variable = pro_lobby_proposal_market
+						var:pro_lobby_opportunity_target ?= scope:target_country
+					}
+				}
+				add = {
+					desc = "LOBBY_OPPORTUNITY_BONUS"
+					value = 100
+				}
+			}
+
+			if = {
+				limit = {
+					scope:actor = {
+						has_variable = anti_lobby_proposal_market
+						var:anti_lobby_opportunity_target ?= scope:target_country
+					}
+				}
+				add = {
+					desc = "LOBBY_OPPORTUNITY_BONUS"
+					value = 50
+				}
+			}
 		}
 
 		propose_score = {
 			value = 10
+		}
+
+		use_obligation_chance = {
+			value = 25
 		}
 
 		will_propose = {
@@ -250,14 +326,17 @@ join_market = {
 			capital = { 
 				market_access < 0.75
 			}
-			# Y está en un power bloc
-			is_in_power_bloc = yes
+			# Y tiene más prestigio que el target
+			prestige > scope:target_country.prestige
+			# Buenas relaciones
+			"relations(scope:target_country)" >= relations_threshold:cordial
 		}
 
 		will_propose_even_if_not_accepted = {
 			capital = { 
 				market_access < 0.5
 			}
+			"relations(scope:target_country)" >= relations_threshold:amicable
 		}
 	}
 }

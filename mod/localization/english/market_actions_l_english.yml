@@ -1,7 +1,7 @@
 ﻿l_english:
  # Join Market Action
  join_market: "Join Market"
- join_market_desc: "Request to join another country's [concept_market]. Only available to non-subject countries that are members of the same [concept_power_bloc]. The country with less [concept_prestige] will join the market of the country with more."
+ join_market_desc: "Request to join another country's [concept_market]. Only available to non-subject countries with more [concept_prestige] than the target. The country with more prestige will join the market of the country with less."
  join_market_action_name: "$join_market$"
  join_market_action_propose_name: "$join_market$"
  join_market_pact_desc: "[SCOPE.GetRootScope.GetDiplomaticPact.GetFirstCountry.GetName] has joined the [concept_market] controlled by [SCOPE.GetRootScope.GetDiplomaticPact.GetSecondCountry.GetName]."
@@ -13,9 +13,17 @@
  join_market_success_effect: "Successfully joined the target country's [concept_market]"
  
  # Join Market Conditions
- JOIN_MARKET_MUST_BE_IN_SAME_POWER_BLOC: "Must be a member of the same [concept_power_bloc]"
- JOIN_MARKET_CANNOT_BE_SUBJECT: "Cannot be a [concept_subject]"
- JOIN_MARKET_LESS_PRESTIGE: "Must have less [concept_prestige] than the target country"
+ JOIN_MARKET_CANNOT_BE_SUBJECT: "Cannot be a [concept_subject] (except Market Union members)"
+ JOIN_MARKET_MORE_PRESTIGE: "Must have more [concept_prestige] than the target country"
+ 
+ # Invite to Market Conditions
+ INVITE_MARKET_CANNOT_BE_SUBJECT: "Cannot be a [concept_subject] (except Market Union members)"
+ INVITE_MARKET_TARGET_CANNOT_BE_SUBJECT: "Target cannot be a [concept_subject] (except Market Union members)"
+ INVITE_MARKET_MORE_PRESTIGE: "Must have more [concept_prestige] than the target country"
+ 
+ # Market Union Subject Type
+ subject_type_market_union: "Market Union"
+ subject_type_market_union_desc: "A voluntary economic union where countries share a common [concept_market] while maintaining complete political independence. Either party can leave at any time."
  
  # Leave Market Action
  leave_market: "Leave Market"
@@ -26,6 +34,28 @@
  leave_market_action_notification_desc: "[INITIATOR_COUNTRY.GetName] has left our [concept_market] and established their own separate economic system."
  leave_market_success_effect: "Successfully left the [concept_market] and now control your own"
  
+ # Invite to Market Action
+ invite_to_market: "Invite to Market"
+ invite_to_market_desc: "Invite another country to join your [concept_market]. Only available to non-subject countries with more [concept_prestige] than the target."
+ invite_to_market_action_name: "$invite_to_market$"
+ invite_to_market_action_propose_name: "$invite_to_market$"
+ invite_to_market_pact_desc: "[SCOPE.GetRootScope.GetDiplomaticPact.GetSecondCountry.GetName] has joined the [concept_market] controlled by [SCOPE.GetRootScope.GetDiplomaticPact.GetFirstCountry.GetName]."
+ invite_to_market_action_notification_name: "[INITIATOR_COUNTRY.GetName] invites us to their market"
+ invite_to_market_action_notification_desc: "[INITIATOR_COUNTRY.GetName] has invited us to join their [concept_market]."
+ invite_to_market_action_break_name: "Expel from Market"
+ invite_to_market_action_notification_break_name: "[INITIATOR_COUNTRY.GetName] expelled us from their market"
+ invite_to_market_action_notification_break_desc: "[INITIATOR_COUNTRY.GetName] has expelled us from their [concept_market]."
+ invite_to_market_success_effect: "Successfully invited the target country to your [concept_market]"
+ 
  # Leave Market Conditions
  LEAVE_MARKET_CANNOT_BE_SUBJECT: "Cannot be a [concept_subject]"
  LEAVE_MARKET_BAD_RELATIONS: "[concept_relations] with the market owner must be below [concept_relations_cordial]"
+ 
+ # AI Acceptance Factors
+ DIPLOMATIC_ACCEPTANCE_STRATEGIC_ADJACENT: "Strategic Adjacency"
+ DIPLOMATIC_ACCEPTANCE_HAS_ECONOMIC_TIES: "Has existing economic ties with other countries"
+ DIPLOMATIC_ACCEPTANCE_IN_SAME_POWER_BLOC: "Member of the same [concept_power_bloc]"
+ 
+ # Pact Requirements
+ DIPLOMATIC_PACT_REQUIREMENT_ACTOR_NOT_SUBJECT: "Proposing country must not be a [concept_subject]"
+ DIPLOMATIC_PACT_REQUIREMENT_TARGET_NOT_SUBJECT: "Target country must not be a [concept_subject]"
