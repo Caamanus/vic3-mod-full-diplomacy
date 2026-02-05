@@ -1,0 +1,263 @@
+join_market = {
+	requires_approval = yes
+	can_use_obligations = yes
+	uses_random_approval = yes
+	groups = {
+		general
+		power_bloc_member
+	}
+
+	texture = "gfx/interface/icons/diplomatic_action_icons/request_market_control.dds"
+	confirmation_sound = "event:/SFX/UI/MapInteraction/SubjectInteractions/diplomatic_action_subjects_12_request_market_control_benign"
+
+	selectable = {
+		NOT = { is_country_type = decentralized }
+		is_revolutionary = no
+	}
+
+	potential = {
+		# El target debe controlar su propio mercado
+		scope:target_country = {
+			market.owner = this
+		}
+		# No estar ya en el mismo mercado
+		NOT = { market = scope:target_country.market }
+	}
+
+	possible = {
+		# Debe estar en el mismo power bloc
+		custom_tooltip = {
+			text = "JOIN_MARKET_MUST_BE_IN_SAME_POWER_BLOC"
+			is_in_same_power_bloc = scope:target_country
+		}
+		
+		# No debe ser vasallo
+		custom_tooltip = {
+			text = "JOIN_MARKET_CANNOT_BE_SUBJECT"
+			is_subject = no
+		}
+		
+		# El actor (quien pide) debe tener menos prestigio que el target
+		custom_tooltip = {
+			text = "JOIN_MARKET_LESS_PRESTIGE"
+			prestige < scope:target_country.prestige
+		}
+
+		# El target debe controlar su mercado
+		scope:target_country = {
+			market.owner = this
+		}
+	}
+
+	accept_effect = {
+		# Mejorar relaciones
+		scope:target_country = { 
+			change_relations = { 
+				country = root 
+				value = 15 
+			} 
+		}
+		
+		# Mensaje de éxito
+		custom_tooltip = join_market_success_effect
+	}
+
+	decline_effect = {
+		# Empeorar relaciones
+		scope:target_country = { 
+			change_relations = { 
+				country = root 
+				value = -10 
+			} 
+		}
+	}
+
+	pact = {
+		cost = 0
+		forced_duration = 12
+
+		# El target (second_country) será el dueño del mercado
+		market_owner = second_country
+
+		requirement_to_maintain = {
+			trigger = {
+				# Debe seguir en el mismo power bloc
+				is_in_same_power_bloc = scope:target_country
+			}
+		}
+
+		requirement_to_maintain = {
+			trigger = {
+				# No debe convertirse en vasallo
+				is_subject = no
+			}
+		}
+
+		actor_can_break = {
+			always = yes
+		}
+
+		manual_break_effect = {
+			change_relations = { country = scope:target_country value = -15 }
+		}
+
+		auto_break_effect = {
+			change_relations = { country = scope:target_country value = -10 }
+		}
+	}
+
+	ai = {
+		evaluation_chance = {
+			value = 0.15
+		}
+
+		accept_score = {
+			value = 0
+
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_BASE"
+				value = -50
+			}
+
+			# Opinión ideológica
+			if = {
+				limit = {
+					"scope:actor.ai_ideological_opinion(root)" > 0
+				}
+				add = {
+					desc = "DIPLOMATIC_ACCEPTANCE_IDEOLOGICAL_OPINION"
+					value = "scope:actor.ai_ideological_opinion(root)"
+					multiply = 0.5
+					max = 30
+				}
+			}
+			else_if = {
+				limit = {
+					"scope:actor.ai_ideological_opinion(root)" < 0
+				}
+				add = {
+					desc = "DIPLOMATIC_ACCEPTANCE_IDEOLOGICAL_OPINION_NEGATIVE"
+					value = "scope:actor.ai_ideological_opinion(root)"
+					multiply = 0.5
+					min = -30
+				}
+			}
+
+			# Beneficio económico para el actor
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_ACTOR_CAPITAL_MARKET_ACCESS"
+				value = 1
+				subtract = scope:actor.capital.market_access
+				multiply = 80
+			}
+
+			# Relaciones entre países
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_RELATIONS"
+				if = {
+					limit = {
+						"relations(scope:actor)" >= relations_threshold:friendly
+					}
+					value = 50
+				}
+				else_if = {
+					limit = {
+						"relations(scope:actor)" >= relations_threshold:amicable
+					}
+					value = 30
+				}
+				else_if = {
+					limit = {
+						"relations(scope:actor)" >= relations_threshold:cordial
+					}
+					value = 15
+				}
+				else_if = {
+					limit = {
+						"relations(scope:actor)" > relations_threshold:poor
+					}
+					value = -20
+				}
+				else = {
+					value = -40
+				}
+			}
+
+			# Actitud del target hacia el actor
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_ATTITUDE"
+				if = {
+					limit = {
+						has_attitude = {
+							who = scope:actor
+							attitude = protective
+						}
+					}
+					value = 40
+				}
+				else_if = {
+					limit = {
+						has_attitude = {
+							who = scope:actor
+							attitude = cooperative
+						}
+					}
+					value = 20
+				}
+				else_if = {
+					limit = {
+						has_attitude = {
+							who = scope:actor
+							attitude = domineering
+						}
+					}
+					value = -30
+				}
+			}
+
+			# Infamia del actor
+			add = {
+				desc = "DIPLOMATIC_ACCEPTANCE_INFAMY"
+				if = {
+					limit = {
+						"scope:actor.infamy" >= infamy_threshold:infamous
+						"scope:actor.infamy" < infamy_threshold:notorious
+					}
+					value = -15
+				}
+				if = {
+					limit = {
+						"scope:actor.infamy" >= infamy_threshold:notorious
+						"scope:actor.infamy" < infamy_threshold:pariah
+					}
+					value = -30
+				}
+				if = {
+					limit = {
+						"scope:actor.infamy" >= infamy_threshold:pariah
+					}
+					value = -50
+				}
+			}
+		}
+
+		propose_score = {
+			value = 10
+		}
+
+		will_propose = {
+			# Solo si necesita mejor acceso al mercado
+			capital = { 
+				market_access < 0.75
+			}
+			# Y está en un power bloc
+			is_in_power_bloc = yes
+		}
+
+		will_propose_even_if_not_accepted = {
+			capital = { 
+				market_access < 0.5
+			}
+		}
+	}
+}

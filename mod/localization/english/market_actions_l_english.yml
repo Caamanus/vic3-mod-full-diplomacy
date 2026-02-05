@@ -1,0 +1,31 @@
+﻿l_english:
+ # Join Market Action
+ join_market: "Join Market"
+ join_market_desc: "Request to join another country's [concept_market]. Only available to non-subject countries that are members of the same [concept_power_bloc]. The country with less [concept_prestige] will join the market of the country with more."
+ join_market_action_name: "$join_market$"
+ join_market_action_propose_name: "$join_market$"
+ join_market_pact_desc: "[SCOPE.GetRootScope.GetDiplomaticPact.GetFirstCountry.GetName] has joined the [concept_market] controlled by [SCOPE.GetRootScope.GetDiplomaticPact.GetSecondCountry.GetName]."
+ join_market_action_notification_name: "[INITIATOR_COUNTRY.GetName] joins our market"
+ join_market_action_notification_desc: "[INITIATOR_COUNTRY.GetName] has joined our [concept_market] and is now economically integrated with us."
+ join_market_action_break_name: "Leave Market"
+ join_market_action_notification_break_name: "[INITIATOR_COUNTRY.GetName] left our market"
+ join_market_action_notification_break_desc: "[INITIATOR_COUNTRY.GetName] has left our [concept_market] and is no longer economically connected to us."
+ join_market_success_effect: "Successfully joined the target country's [concept_market]"
+ 
+ # Join Market Conditions
+ JOIN_MARKET_MUST_BE_IN_SAME_POWER_BLOC: "Must be a member of the same [concept_power_bloc]"
+ JOIN_MARKET_CANNOT_BE_SUBJECT: "Cannot be a [concept_subject]"
+ JOIN_MARKET_LESS_PRESTIGE: "Must have less [concept_prestige] than the target country"
+ 
+ # Leave Market Action
+ leave_market: "Leave Market"
+ leave_market_desc: "Leave the current [concept_market] and establish your own. Only available to non-subject countries with poor [concept_relations] with the market owner (below [concept_relations_cordial])."
+ leave_market_action_name: "$leave_market$"
+ leave_market_action_propose_name: "$leave_market$"
+ leave_market_action_notification_name: "[INITIATOR_COUNTRY.GetName] leaves market"
+ leave_market_action_notification_desc: "[INITIATOR_COUNTRY.GetName] has left our [concept_market] and established their own separate economic system."
+ leave_market_success_effect: "Successfully left the [concept_market] and now control your own"
+ 
+ # Leave Market Conditions
+ LEAVE_MARKET_CANNOT_BE_SUBJECT: "Cannot be a [concept_subject]"
+ LEAVE_MARKET_BAD_RELATIONS: "[concept_relations] with the market owner must be below [concept_relations_cordial]"

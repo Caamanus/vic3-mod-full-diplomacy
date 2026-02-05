@@ -1,0 +1,152 @@
+leave_market = {
+	requires_approval = no
+	groups = {
+		general
+	}
+
+	texture = "gfx/interface/icons/diplomatic_action_icons/grant_market_independence.dds"
+	confirmation_sound = "event:/SFX/UI/MapInteraction/SubjectInteractions/diplomatic_action_subjects_05_grant_own_market_benign"
+
+	selectable = {
+		NOT = { is_country_type = decentralized }
+	}
+
+	potential = {
+		# No debe ser el dueño del mercado
+		NOT = { market.owner = this }
+		
+		# Debe tener un dueño de mercado
+		market.owner ?= yes
+	}
+
+	possible = {
+		# No debe ser vasallo (los vasallos no pueden liberarse así del mercado)
+		custom_tooltip = {
+			text = "LEAVE_MARKET_CANNOT_BE_SUBJECT"
+			is_subject = no
+		}
+		
+		# Las relaciones con el dueño del mercado deben estar por debajo de "cordial"
+		custom_tooltip = {
+			text = "LEAVE_MARKET_BAD_RELATIONS"
+			market.owner = {
+				root.relations:prev < relations_threshold:cordial
+			}
+		}
+	}
+
+	accept_effect = {
+		# Recuperar control del propio mercado
+		custom_tooltip = leave_market_success_effect
+		
+		# Guardar el anterior dueño del mercado
+		hidden_effect = {
+			save_scope_as = leaving_country
+			market.owner = {
+				save_scope_as = former_market_owner
+			}
+		}
+		
+		# Empeorar relaciones con el anterior dueño del mercado
+		scope:former_market_owner = {
+			change_relations = { 
+				country = scope:leaving_country 
+				value = -25 
+			}
+		}
+		
+		hidden_effect = {
+			# Crear catalizador diplomático
+			scope:former_market_owner = {
+				create_diplomatic_catalyst = {
+					type = catalyst_broke_alliance
+					target = scope:leaving_country
+				}
+			}
+		}
+	}
+
+	ai = {
+		evaluation_chance = {
+			value = 0.2
+		}
+
+		propose_score = {
+			value = 0
+
+			# Si las relaciones son muy malas
+			if = {
+				limit = {
+					market.owner = {
+						root.relations:prev <= relations_threshold:poor
+					}
+				}
+				add = 50
+			}
+
+			# Si está en guerra con el dueño del mercado
+			if = {
+				limit = {
+					has_war_with = market.owner
+				}
+				add = 100
+			}
+
+			# Si tiene ideología incompatible
+			if = {
+				limit = {
+					market.owner = {
+						"root.ai_ideological_opinion(prev)" < -25
+					}
+				}
+				add = 30
+			}
+
+			# Si es rival
+			if = {
+				limit = {
+					has_diplomatic_pact = {
+						who = market.owner
+						type = rivalry
+					}
+				}
+				add = 75
+			}
+
+			# Si tiene buen acceso alternativo al mercado (puede sobrevivir sin este mercado)
+			if = {
+				limit = {
+					capital = {
+						market_access >= 0.8
+					}
+				}
+				add = 20
+			}
+			else = {
+				# Penalización si depende del mercado
+				add = -30
+			}
+		}
+
+		will_propose = {
+			# Solo si las relaciones están mal Y puede sobrevivir económicamente
+			market.owner = {
+				root.relations:prev < relations_threshold:cordial
+			}
+			
+			OR = {
+				# O tiene buen acceso local
+				capital = {
+					market_access >= 0.7
+				}
+				# O está en guerra
+				has_war_with = market.owner
+				# O es rival
+				has_diplomatic_pact = {
+					who = market.owner
+					type = rivalry
+				}
+			}
+		}
+	}
+}

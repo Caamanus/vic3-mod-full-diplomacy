@@ -1,0 +1,31 @@
+﻿l_spanish:
+ # Acción Unirse al Mercado
+ join_market: "Unirse al Mercado"
+ join_market_desc: "Solicitar unirse al [concept_market] de otro país. Solo disponible para países no vasallos que sean miembros del mismo [concept_power_bloc]. El país con menos [concept_prestige] se unirá al mercado del país con más."
+ join_market_action_name: "$join_market$"
+ join_market_action_propose_name: "$join_market$"
+ join_market_pact_desc: "[SCOPE.GetRootScope.GetDiplomaticPact.GetFirstCountry.GetName] se ha unido al [concept_market] controlado por [SCOPE.GetRootScope.GetDiplomaticPact.GetSecondCountry.GetName]."
+ join_market_action_notification_name: "[INITIATOR_COUNTRY.GetName] se une a nuestro mercado"
+ join_market_action_notification_desc: "[INITIATOR_COUNTRY.GetName] se ha unido a nuestro [concept_market] y ahora está integrado económicamente con nosotros."
+ join_market_action_break_name: "Salir del Mercado"
+ join_market_action_notification_break_name: "[INITIATOR_COUNTRY.GetName] abandonó nuestro mercado"
+ join_market_action_notification_break_desc: "[INITIATOR_COUNTRY.GetName] ha abandonado nuestro [concept_market] y ya no está conectado económicamente con nosotros."
+ join_market_success_effect: "Te has unido exitosamente al [concept_market] del país objetivo"
+ 
+ # Condiciones para Unirse al Mercado
+ JOIN_MARKET_MUST_BE_IN_SAME_POWER_BLOC: "Debe ser miembro del mismo [concept_power_bloc]"
+ JOIN_MARKET_CANNOT_BE_SUBJECT: "No puede ser un [concept_subject]"
+ JOIN_MARKET_LESS_PRESTIGE: "Debe tener menos [concept_prestige] que el país objetivo"
+ 
+ # Acción Salir del Mercado
+ leave_market: "Salir del Mercado"
+ leave_market_desc: "Abandonar el [concept_market] actual y establecer el propio. Solo disponible para países no vasallos con malas [concept_relations] con el dueño del mercado (por debajo de [concept_relations_cordial])."
+ leave_market_action_name: "$leave_market$"
+ leave_market_action_propose_name: "$leave_market$"
+ leave_market_action_notification_name: "[INITIATOR_COUNTRY.GetName] abandona el mercado"
+ leave_market_action_notification_desc: "[INITIATOR_COUNTRY.GetName] ha abandonado nuestro [concept_market] y establecido su propio sistema económico separado."
+ leave_market_success_effect: "Has abandonado exitosamente el [concept_market] y ahora controlas el tuyo propio"
+ 
+ # Condiciones para Salir del Mercado
+ LEAVE_MARKET_CANNOT_BE_SUBJECT: "No puede ser un [concept_subject]"
+ LEAVE_MARKET_BAD_RELATIONS: "Las [concept_relations] con el dueño del mercado deben estar por debajo de [concept_relations_cordial]"
